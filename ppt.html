@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Immediate Reconstruction Choices</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;500;700&family=Roboto+Condensed:wght@700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-navy: #0f172a;
+            --accent-blue: #3b82f6;
+            --accent-teal: #0d9488;
+            --accent-indigo: #4f46e5;
+            --bg-light: #f8fafc;
+            --card-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: #cbd5e1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            font-family: 'Noto Sans TC', sans-serif;
+        }
+
+        .slide-container {
+            width: 1280px;
+            height: 720px;
+            background: linear-gradient(135deg, #ffffff 0%, #f1f5f9 100%);
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            padding: 40px 60px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        }
+
+        /* 標題設計：縮小字體並保持單行 */
+        .header {
+            position: relative;
+            z-index: 10;
+            text-align: center;
+            margin-bottom: 60px;
+            padding-bottom: 20px;
+        }
+
+        .header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 4px;
+            background: var(--accent-blue);
+            border-radius: 2px;
+        }
+
+        .slide-title {
+            font-family: 'Roboto Condensed', sans-serif;
+            font-size: 42px; /* 縮小字體以優化閱讀體驗 */
+            color: var(--primary-navy);
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            white-space: nowrap; 
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        /* 內容佈局 */
+        .content-grid {
+            flex-grow: 1;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 40px;
+            z-index: 5;
+            align-items: stretch;
+        }
+
+        /* 卡片設計 */
+        .path-card {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
+            border-radius: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            display: flex;
+            flex-direction: column;
+            padding: 40px 30px;
+            text-align: center;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: var(--card-shadow);
+            position: relative;
+        }
+
+        .path-card:hover {
+            transform: translateY(-15px);
+            background: #ffffff;
+            box-shadow: 0 20px 35px -10px rgba(0, 0, 0, 0.15);
+        }
+
+        /* 圖示區 */
+        .icon-box {
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
+            background: var(--bg-light);
+            transition: all 0.5s ease;
+        }
+
+        .path-card:nth-child(1) .icon-box { background: #eff6ff; color: var(--accent-blue); }
+        .path-card:nth-child(2) .icon-box { background: #f0fdfa; color: var(--accent-teal); }
+        .path-card:nth-child(3) .icon-box { background: #eef2ff; color: var(--accent-indigo); }
+
+        .path-card:hover .icon-box {
+            border-radius: 50%;
+            transform: scale(1.1);
+        }
+
+        .icon-box svg {
+            width: 60px;
+            height: 60px;
+        }
+
+        /* 文字內容 */
+        .sub-title {
+            font-size: 30px;
+            font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 20px;
+            line-height: 1.2;
+        }
+
+        .highlight-badge {
+            margin-top: auto;
+            align-self: center;
+            padding: 8px 24px;
+            background: var(--primary-navy);
+            color: #ffffff;
+            border-radius: 12px;
+            font-weight: 500;
+            font-size: 18px;
+            letter-spacing: 1px;
+            box-shadow: 0 4px 12px rgba(15, 23, 42, 0.3);
+        }
+
+        /* 背景裝飾 */
+        .bg-decor {
+            position: absolute;
+            width: 800px;
+            height: 800px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(59, 130, 246, 0.03) 0%, rgba(255, 255, 255, 0) 70%);
+            top: -200px;
+            left: -200px;
+            z-index: 1;
+        }
+
+        .footer-info {
+            margin-top: 30px;
+            text-align: right;
+            font-size: 14px;
+            color: #94a3b8;
+            font-weight: 300;
+            z-index: 10;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="slide-container">
+        <div class="bg-decor"></div>
+        
+        <!-- 標題部分 -->
+        <div class="header">
+            <h1 class="slide-title">Three Choices for Immediate Reconstruction</h1>
+        </div>
+
+        <!-- 三種路徑展示區 -->
+        <div class="content-grid">
+            
+            <!-- 選項 1 -->
+            <div class="path-card">
+                <div class="icon-box">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M7 12c0 3.866 3.134 7 7 7s7-3.134 7-7M7 12c0-3.866 3.134-7 7-7s7 3.134 7 7M7 12H3m18 0h-3M14 7V3m0 18v-4M14 12h.01"/>
+                        <circle cx="14" cy="12" r="3"/>
+                    </svg>
+                </div>
+                <div class="sub-title">完全經口內路徑</div>
+            </div>
+
+            <!-- 選項 2 -->
+            <div class="path-card">
+                <div class="icon-box">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/>
+                        <path d="m9 12 2 2 4-4"/>
+                        <path d="M12 18v-6m0-4h.01"/>
+                    </svg>
+                </div>
+                <div class="sub-title">口內外聯合路徑</div>
+            </div>
+
+            <!-- 選項 3 -->
+            <div class="path-card">
+                <div class="icon-box">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                        <path d="m9 12 2 2 4-4"/>
+                    </svg>
+                </div>
+                <div class="sub-title">分階段口外路徑</div>
+                <div class="highlight-badge">最能避免污染</div>
+            </div>
+
+        </div>
+
+        <div class="footer-info">Maxillofacial Surgery Reconstruction Options - Immediate Protocol</div>
+    </div>
+
+</body>
+</html>
